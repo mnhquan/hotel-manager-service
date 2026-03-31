@@ -17,14 +17,26 @@ public class StatisticsController : ControllerBase
     }
 
     /// <summary>
-    /// API 1: Tính tổng doanh thu (revenue)
+    /// API 1.1: Tính tổng doanh thu (revenue) của toàn bộ hệ thống
     /// </summary>
     [HttpGet("revenue")]
-    public async Task<ActionResult<RevenueResponse>> GetTotalRevenue()
+    public async Task<ActionResult<RevenueResponse>> GetTotalSystemRevenue()
     {
-        // Tính tổng TotalPrice của các Booking không bị hủy
         var total = await _context.Bookings
             .Where(b => b.Status != "Hủy" && b.Status != "Cancelled")
+            .SumAsync(b => (decimal?)b.TotalPrice) ?? 0;
+
+        return Ok(new RevenueResponse { TotalRevenue = total });
+    }
+
+    /// <summary>
+    /// API 1.2: Tính tổng doanh thu (revenue) của riêng 1 Doanh Nghiệp / Cơ sở
+    /// </summary>
+    [HttpGet("revenue/property/{propertyId}")]
+    public async Task<ActionResult<RevenueResponse>> GetPropertyRevenue(int propertyId)
+    {
+        var total = await _context.Bookings
+            .Where(b => b.Status != "Hủy" && b.Status != "Cancelled" && b.Room.PropertyId == propertyId)
             .SumAsync(b => (decimal?)b.TotalPrice) ?? 0;
 
         return Ok(new RevenueResponse { TotalRevenue = total });
