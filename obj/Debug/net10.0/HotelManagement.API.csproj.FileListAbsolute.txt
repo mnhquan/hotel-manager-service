@@ -169,3 +169,4 @@ D:\University\Sixth Semester\Software Engineering\Code\HotelManager\hotel-manage
 D:\University\Sixth Semester\Software Engineering\Code\HotelManager\hotel-manager-service\obj\Debug\net10.0\HotelManagement.API.pdb
 D:\University\Sixth Semester\Software Engineering\Code\HotelManager\hotel-manager-service\obj\Debug\net10.0\HotelManagement.API.genruntimeconfig.cache
 D:\University\Sixth Semester\Software Engineering\Code\HotelManager\hotel-manager-service\obj\Debug\net10.0\ref\HotelManagement.API.dll
+D:\University\Sixth Semester\Software Engineering\Code\HotelManager\hotel-manager-service\bin\Debug\net10.0\appsettings.Development.json
