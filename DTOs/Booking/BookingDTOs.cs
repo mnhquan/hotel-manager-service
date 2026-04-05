@@ -27,6 +27,8 @@ public class BookingResponse
     public decimal TotalPrice { get; set; }
     public decimal? Deposit { get; set; }
     public string? Status { get; set; }
+    public string? RoomImage { get; set; }
+    public string? UserAvatar { get; set; }
     public DateTime? CreatedAt { get; set; }
 }
 

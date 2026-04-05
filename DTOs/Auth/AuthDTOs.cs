@@ -38,5 +38,14 @@ public class UserInfo
     public string FullName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string? Phone { get; set; }
+    public string? Avatar { get; set; }
     public string Role { get; set; } = string.Empty;
+}
+
+public class ChangePasswordRequest
+{
+    [Required] public string CurrentPassword { get; set; } = string.Empty;
+    [Required, MinLength(6)] public string NewPassword { get; set; } = string.Empty;
+    [Required, Compare("NewPassword", ErrorMessage = "Mật khẩu xác nhận không khớp")] 
+    public string ConfirmPassword { get; set; } = string.Empty;
 }

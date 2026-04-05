@@ -12,4 +12,5 @@ public class CreateRoomRequest
     public string? Description { get; set; }
     public string? Status { get; set; } = "available";
     public int PropertyId { get; set; }
+    public List<string>? ImageUrls { get; set; }
 }

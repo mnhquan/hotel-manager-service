@@ -2,6 +2,7 @@ using HotelManagement.API.Data;
 using HotelManagement.API.DTOs.Statistics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace HotelManagement.API.Controllers;
 
@@ -130,5 +131,56 @@ public class StatisticsController : ControllerBase
         .ToList();
 
         return Ok(recommendations);
+    }
+
+    /// <summary>
+    /// API partner-stats: Lấy thống kê tổng quan cho Dashboard Partner
+    /// </summary>
+    [HttpGet("partner-stats")]
+    public async Task<IActionResult> GetPartnerDashboardStats()
+    {
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
+        {
+            return Unauthorized(new { message = "Bạn cần đăng nhập để thực hiện thao tác này" });
+        }
+
+        var partner = await _context.Partners.FirstOrDefaultAsync(p => p.UserId == userId);
+        if (partner == null) return NotFound("Partner not found");
+
+        var partnerId = partner.Id;
+
+        // 1. Tổng doanh thu của partner
+        var totalRevenue = await _context.Bookings
+            .Where(b => b.Room.Property.PartnerId == partnerId && b.Status != "Hủy" && b.Status != "Cancelled")
+            .SumAsync(b => (decimal?)b.TotalPrice) ?? 0;
+
+        // 2. Tỷ lệ lấp đầy hôm nay của partner
+        var today = DateTime.Today;
+        var partnerRoomsActive = await _context.Rooms
+            .Where(r => r.Property.PartnerId == partnerId)
+            .CountAsync();
+            
+        var bookedRoomsCountActive = await _context.Bookings
+            .Where(b => b.Room.Property.PartnerId == partnerId && b.CheckIn <= today && b.CheckOut >= today && b.Status != "Hủy" && b.Status != "Cancelled")
+            .Select(b => b.RoomId)
+            .Distinct()
+            .CountAsync();
+            
+        double occupancyRateValue = partnerRoomsActive > 0 ? ((double)bookedRoomsCountActive / partnerRoomsActive) * 100 : 0;
+
+        // 3. Số booking active (không phải đã xong hoặc đã hủy)
+        var activeBookingStatuses = new[] { "Confirmed", "Checked_in", "confirmed", "checked_in" };
+        var activeBookingsNum = await _context.Bookings
+            .Where(b => b.Room.Property.PartnerId == partnerId && activeBookingStatuses.Contains(b.Status))
+            .CountAsync();
+
+        return Ok(new 
+        {
+            TotalRevenue = totalRevenue,
+            OccupancyRate = Math.Round(occupancyRateValue, 2),
+            ActiveBookingsCount = activeBookingsNum,
+            TotalRooms = partnerRoomsActive
+        });
     }
 }

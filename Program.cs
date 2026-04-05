@@ -1,6 +1,8 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using HotelManagement.API.Data;
 using HotelManagement.API.Middleware;
+using HotelManagement.API.Models;
 using HotelManagement.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -37,34 +39,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuer = false,
             ValidateAudience = false,
-            ValidateLifetime = false,
-            ValidateIssuerSigningKey = false,
-            SignatureValidator = delegate (string token, TokenValidationParameters parameters)
-            {
-                var jwt = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(token);
-                return jwt;
-            }
-        };
-
-        // Hook để bỏ qua check token hợp lệ, chỉ cần gửi chữ gì lên cũng được tính là Admin
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-                if (!string.IsNullOrEmpty(token))
-                {
-                    var claims = new[] 
-                    { 
-                        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, "1"), 
-                        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "admin") 
-                    };
-                    var identity = new System.Security.Claims.ClaimsIdentity(claims, "Test");
-                    context.Principal = new System.Security.Claims.ClaimsPrincipal(identity);
-                    context.Success();
-                }
-                return Task.CompletedTask;
-            }
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]!))
         };
     });
 
@@ -75,8 +52,17 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
-builder.Services.AddControllers();
+
+builder.Services.AddHttpClient();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -112,9 +98,40 @@ app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseStaticFiles(); // Added for image uploads
+
 app.UseCors("FrontendPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
+// Seeding data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        // Đảm bảo các vai trò cơ bản tồn tại
+        var roles = new[] { "admin", "customer", "partner" };
+        foreach (var roleName in roles)
+        {
+            if (!await context.Roles.AnyAsync(r => r.RoleName == roleName))
+            {
+                context.Roles.Add(new Role { RoleName = roleName });
+            }
+        }
+        await context.SaveChangesAsync();
+
+        // Đảm bảo có tài khoản Admin mẫu
+        var authService = services.GetRequiredService<IAuthService>();
+        await authService.EnsureAdminUserAsync();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Đã xảy ra lỗi khi seeding database.");
+    }
+}
+
 app.MapControllers();
 
 app.Run();
