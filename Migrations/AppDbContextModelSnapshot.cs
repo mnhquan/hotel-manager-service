@@ -17,7 +17,7 @@ namespace HotelManagement.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.0")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -112,6 +112,105 @@ namespace HotelManagement.API.Migrations
                     b.ToTable("dat_phong", (string)null);
                 });
 
+            modelBuilder.Entity("HotelManagement.API.Models.Partner", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("dia_chi");
+
+                    b.Property<string>("BusinessName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ten_doanh_nghiep");
+
+                    b.Property<string>("BusinessType")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("loai_hinh_kinh_doanh");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngay_tao");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("mo_ta");
+
+                    b.Property<string>("PartnerCode")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ma_doi_tac");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("trang_thai");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngay_cap_nhat");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("nguoi_dung_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("doi_tac", (string)null);
+                });
+
+            modelBuilder.Entity("HotelManagement.API.Models.PartnerBankAccount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccountHolder")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("chu_tai_khoan");
+
+                    b.Property<string>("AccountNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("so_tai_khoan");
+
+                    b.Property<string>("BankName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ten_ngan_hang");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngay_tao");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("bit")
+                        .HasColumnName("la_tai_khoan_chinh");
+
+                    b.Property<int>("PartnerId")
+                        .HasColumnType("int")
+                        .HasColumnName("doi_tac_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngay_cap_nhat");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartnerId");
+
+                    b.ToTable("tai_khoan_ngan_hang_doi_tac", (string)null);
+                });
+
             modelBuilder.Entity("HotelManagement.API.Models.Payment", b =>
                 {
                     b.Property<int>("Id")
@@ -159,6 +258,164 @@ namespace HotelManagement.API.Migrations
                     b.HasIndex("BookingId");
 
                     b.ToTable("thanh_toan", (string)null);
+                });
+
+            modelBuilder.Entity("HotelManagement.API.Models.Payout", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccountHolder")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("chu_tai_khoan");
+
+                    b.Property<string>("AccountNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("so_tai_khoan");
+
+                    b.Property<string>("AdminNote")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ghi_chu_admin");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("so_tien");
+
+                    b.Property<string>("BankName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ten_ngan_hang");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngay_tao");
+
+                    b.Property<DateTime?>("PaidAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngay_thanh_toan");
+
+                    b.Property<int>("PartnerId")
+                        .HasColumnType("int")
+                        .HasColumnName("doi_tac_id");
+
+                    b.Property<string>("ProofImageUrl")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("url_bang_chung");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("trang_thai");
+
+                    b.Property<string>("TransactionId")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("id_giao_dich");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngay_cap_nhat");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartnerId");
+
+                    b.ToTable("thanh_toan_doi_tac", (string)null);
+                });
+
+            modelBuilder.Entity("HotelManagement.API.Models.Property", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal?>("AverageRating")
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("diem_trung_binh");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("tinh_thanh");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngay_tao");
+
+                    b.Property<TimeSpan?>("DefaultCheckInTime")
+                        .HasColumnType("time")
+                        .HasColumnName("gio_nhan_phong_mac_dinh");
+
+                    b.Property<TimeSpan?>("DefaultCheckOutTime")
+                        .HasColumnType("time")
+                        .HasColumnName("gio_tra_phong_mac_dinh");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("mo_ta");
+
+                    b.Property<string>("DetailedAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("dia_chi_chi_tiet");
+
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("quan_huyen");
+
+                    b.Property<decimal?>("Latitude")
+                        .HasColumnType("decimal(18,8)")
+                        .HasColumnName("vi_do");
+
+                    b.Property<decimal?>("Longitude")
+                        .HasColumnType("decimal(18,8)")
+                        .HasColumnName("kinh_do");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ten_co_so");
+
+                    b.Property<int>("PartnerId")
+                        .HasColumnType("int")
+                        .HasColumnName("doi_tac_id");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("trang_thai");
+
+                    b.Property<int?>("TotalReviews")
+                        .HasColumnType("int")
+                        .HasColumnName("tong_so_danh_gia");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("loai_co_so");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngay_cap_nhat");
+
+                    b.Property<string>("Ward")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("phuong_xa");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartnerId");
+
+                    b.ToTable("co_so_luu_tru", (string)null);
                 });
 
             modelBuilder.Entity("HotelManagement.API.Models.Review", b =>
@@ -287,7 +544,46 @@ namespace HotelManagement.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PropertyId");
+
                     b.ToTable("phong", (string)null);
+                });
+
+            modelBuilder.Entity("HotelManagement.API.Models.RoomImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngay_tao");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int")
+                        .HasColumnName("thu_tu_hien_thi");
+
+                    b.Property<bool>("IsMainImage")
+                        .HasColumnType("bit")
+                        .HasColumnName("la_anh_chinh");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int")
+                        .HasColumnName("phong_id");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("url_anh");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("anh_phong", (string)null);
                 });
 
             modelBuilder.Entity("HotelManagement.API.Models.User", b =>
@@ -395,6 +691,28 @@ namespace HotelManagement.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("HotelManagement.API.Models.Partner", b =>
+                {
+                    b.HasOne("HotelManagement.API.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HotelManagement.API.Models.PartnerBankAccount", b =>
+                {
+                    b.HasOne("HotelManagement.API.Models.Partner", "Partner")
+                        .WithMany()
+                        .HasForeignKey("PartnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Partner");
+                });
+
             modelBuilder.Entity("HotelManagement.API.Models.Payment", b =>
                 {
                     b.HasOne("HotelManagement.API.Models.Booking", "Booking")
@@ -404,6 +722,26 @@ namespace HotelManagement.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Booking");
+                });
+
+            modelBuilder.Entity("HotelManagement.API.Models.Payout", b =>
+                {
+                    b.HasOne("HotelManagement.API.Models.Partner", "Partner")
+                        .WithMany()
+                        .HasForeignKey("PartnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Partner");
+                });
+
+            modelBuilder.Entity("HotelManagement.API.Models.Property", b =>
+                {
+                    b.HasOne("HotelManagement.API.Models.Partner", null)
+                        .WithMany("Properties")
+                        .HasForeignKey("PartnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("HotelManagement.API.Models.Review", b =>
@@ -425,6 +763,28 @@ namespace HotelManagement.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("HotelManagement.API.Models.Room", b =>
+                {
+                    b.HasOne("HotelManagement.API.Models.Property", "Property")
+                        .WithMany("Rooms")
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Property");
+                });
+
+            modelBuilder.Entity("HotelManagement.API.Models.RoomImage", b =>
+                {
+                    b.HasOne("HotelManagement.API.Models.Room", "Room")
+                        .WithMany("Images")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+                });
+
             modelBuilder.Entity("HotelManagement.API.Models.UserRole", b =>
                 {
                     b.HasOne("HotelManagement.API.Models.Role", "Role")
@@ -444,6 +804,16 @@ namespace HotelManagement.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("HotelManagement.API.Models.Partner", b =>
+                {
+                    b.Navigation("Properties");
+                });
+
+            modelBuilder.Entity("HotelManagement.API.Models.Property", b =>
+                {
+                    b.Navigation("Rooms");
+                });
+
             modelBuilder.Entity("HotelManagement.API.Models.Role", b =>
                 {
                     b.Navigation("UserRoles");
@@ -452,6 +822,8 @@ namespace HotelManagement.API.Migrations
             modelBuilder.Entity("HotelManagement.API.Models.Room", b =>
                 {
                     b.Navigation("Bookings");
+
+                    b.Navigation("Images");
 
                     b.Navigation("Reviews");
                 });

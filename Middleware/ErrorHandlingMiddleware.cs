@@ -22,13 +22,17 @@ public class ErrorHandlingMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unhandled exception");
+            _logger.LogError(ex, "Unhandled exception: {Message}", ex.Message);
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            await context.Response.WriteAsync(JsonSerializer.Serialize(new
+
+            var response = new
             {
-                message = "Có lỗi xảy ra, vui lòng thử lại"
-            }));
+                message = "Có lỗi xảy ra, vui lòng thử lại",
+                detail = ex.ToString()
+            };
+
+            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
     }
 }

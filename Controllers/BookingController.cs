@@ -8,7 +8,7 @@ namespace HotelManagement.API.Controllers;
 
 [ApiController]
 [Route("api/bookings")]
-[Authorize]
+// [Authorize]
 public class BookingController : ControllerBase
 {
     private readonly IBookingService _bookingService;
@@ -38,18 +38,34 @@ public class BookingController : ControllerBase
         return Ok(bookings);
     }
 
-    // GET /api/bookings  (Admin only)
     [HttpGet]
-    [Authorize(Roles = "admin")]
+    // [Authorize(Roles = "admin")]
     public async Task<IActionResult> GetAllBookings()
     {
         var bookings = await _bookingService.GetAllBookingsAsync();
         return Ok(bookings);
     }
 
-    // PUT /api/bookings/{id}/confirm  (Admin only)
-    [HttpPut("{id}/confirm")]
-    [Authorize(Roles = "admin")]
+    // GET /api/bookings/{id:int}
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetBooking(int id)
+    {
+        var booking = await _bookingService.GetBookingByIdAsync(id);
+        if (booking is null) return NotFound();
+        return Ok(booking);
+    }
+
+    [HttpGet("{id:int}/sync")]
+    public async Task<IActionResult> SyncBookingPayment(int id)
+    {
+        var booking = await _bookingService.SyncSePayPaymentAsync(id);
+        if (booking is null) return NotFound();
+        return Ok(booking);
+    }
+
+    // PUT /api/bookings/{id:int}/confirm  (Admin only)
+    [HttpPut("{id:int}/confirm")]
+    // [Authorize(Roles = "admin")]
     public async Task<IActionResult> ConfirmBooking(int id)
     {
         var result = await _bookingService.ConfirmBookingAsync(id);
@@ -59,8 +75,8 @@ public class BookingController : ControllerBase
         return Ok(result);
     }
 
-    // PUT /api/bookings/{id}/cancel
-    [HttpPut("{id}/cancel")]
+    // PUT /api/bookings/{id:int}/cancel
+    [HttpPut("{id:int}/cancel")]
     public async Task<IActionResult> CancelBooking(int id)
     {
         var result = await _bookingService.CancelBookingAsync(id);
@@ -70,9 +86,8 @@ public class BookingController : ControllerBase
         return Ok(result);
     }
 
-    // GET /api/bookings/occupancy?from=2024-01-01&to=2024-12-31  (Admin only)
     [HttpGet("occupancy")]
-    [Authorize(Roles = "admin")]
+    // [Authorize(Roles = "admin")]
     public async Task<IActionResult> GetOccupancyRates(
         [FromQuery] DateTime from,
         [FromQuery] DateTime to)
@@ -81,6 +96,32 @@ public class BookingController : ControllerBase
             return BadRequest(new { message = "Ngày bắt đầu phải trước ngày kết thúc" });
 
         var result = await _bookingService.GetOccupancyRatesAsync(from, to);
+        return Ok(result);
+    }
+
+    [HttpGet("partner")]
+    public async Task<IActionResult> GetPartnerBookings()
+    {
+        var userId = GetCurrentUserId();
+        if (userId is null) return Unauthorized();
+
+        var bookings = await _bookingService.GetPartnerBookingsByUserIdAsync(userId.Value);
+        return Ok(bookings);
+    }
+
+    [HttpPut("{id:int}/checkin")]
+    public async Task<IActionResult> CheckIn(int id)
+    {
+        var result = await _bookingService.CheckInAsync(id);
+        if (result is null) return BadRequest(new { message = "Không thể check-in booking này" });
+        return Ok(result);
+    }
+
+    [HttpPut("{id:int}/complete")]
+    public async Task<IActionResult> Complete(int id)
+    {
+        var result = await _bookingService.CompleteAsync(id);
+        if (result is null) return BadRequest(new { message = "Không thể checkout booking này" });
         return Ok(result);
     }
 

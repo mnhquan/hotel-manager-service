@@ -16,4 +16,13 @@ public class RoomResponse
     public bool? IsApproved { get; set; }
     public DateTime? CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+
+    // Dữ liệu mở rộng từ các bảng Join
+    public string? MainImageUrl { get; set; }
+    public List<string> ImageUrls { get; set; } = new();
+    public string? PropertyLocation { get; set; } // Tỉnh/TP
+    public string? FullAddress { get; set; }      // Toàn bộ địa chỉ
+    public string? PropertyName { get; set; }
+    public string? PropertyDescription { get; set; }
+    public decimal? Rating { get; set; }
 }

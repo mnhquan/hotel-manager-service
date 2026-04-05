@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace HotelManagement.API.Models;
 
 public class Room
@@ -19,4 +21,7 @@ public class Room
 
     public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
+    [JsonIgnore]
+    public Property Property { get; set; } = null!;
+    public ICollection<RoomImage> Images { get; set; } = new List<RoomImage>();
 }
