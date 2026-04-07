@@ -15,6 +15,7 @@ public class Property
     public decimal? Longitude { get; set; }
     public decimal? Latitude { get; set; }
     public string? Description { get; set; }
+    public string? ImageUrl { get; set; }
     public TimeSpan? DefaultCheckInTime { get; set; }
     public TimeSpan? DefaultCheckOutTime { get; set; }
     public string? Status { get; set; } = "active";

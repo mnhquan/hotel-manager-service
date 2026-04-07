@@ -104,6 +104,7 @@ public class AppDbContext : DbContext
             e.Property(p => p.Longitude).HasColumnName("kinh_do").HasColumnType("decimal(18,8)");
             e.Property(p => p.Latitude).HasColumnName("vi_do").HasColumnType("decimal(18,8)");
             e.Property(p => p.Description).HasColumnName("mo_ta");
+            e.Property(p => p.ImageUrl).HasColumnName("url_anh_dai_dien");
             e.Property(p => p.DefaultCheckInTime).HasColumnName("gio_nhan_phong_mac_dinh");
             e.Property(p => p.DefaultCheckOutTime).HasColumnName("gio_tra_phong_mac_dinh");
             e.Property(p => p.Status).HasColumnName("trang_thai");

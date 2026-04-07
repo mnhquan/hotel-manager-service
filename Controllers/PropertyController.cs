@@ -3,6 +3,7 @@ using HotelManagement.API.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using HotelManagement.API.Models;
 
 namespace HotelManagement.API.Controllers;
 
@@ -119,6 +120,7 @@ public class PropertyController : ControllerBase
         property.Ward = updatedData.Ward;
         property.DetailedAddress = updatedData.DetailedAddress;
         property.Description = updatedData.Description;
+        property.ImageUrl = updatedData.ImageUrl;
 
         await _db.SaveChangesAsync();
         return Ok(new { message = "Cập nhật thông tin cơ sở thành công", property });
