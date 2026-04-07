@@ -89,4 +89,38 @@ public class PropertyController : ControllerBase
 
         return Ok(properties);
     }
+
+    [HttpPut("my")]
+    public async Task<IActionResult> UpdateMyProperty([FromBody] Property updatedData)
+    {
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
+        {
+            return Unauthorized(new { message = "Bạn cần đăng nhập để thực hiện thao tác này" });
+        }
+
+        var partner = await _db.Partners.FirstOrDefaultAsync(p => p.UserId == userId);
+        if (partner == null)
+        {
+            return NotFound(new { message = "Bạn chưa đăng ký thông tin đối tác" });
+        }
+
+        var property = await _db.Properties.FirstOrDefaultAsync(p => p.PartnerId == partner.Id);
+        if (property == null)
+        {
+            return NotFound(new { message = "Không tìm thấy cơ sở lưu trú để cập nhật" });
+        }
+
+        // Update fields
+        property.Name = updatedData.Name;
+        property.Type = updatedData.Type;
+        property.City = updatedData.City;
+        property.District = updatedData.District;
+        property.Ward = updatedData.Ward;
+        property.DetailedAddress = updatedData.DetailedAddress;
+        property.Description = updatedData.Description;
+
+        await _db.SaveChangesAsync();
+        return Ok(new { message = "Cập nhật thông tin cơ sở thành công", property });
+    }
 }
