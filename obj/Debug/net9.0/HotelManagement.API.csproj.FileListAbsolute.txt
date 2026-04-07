@@ -161,3 +161,13 @@ D:\CNPM\hotel-manager-service\bin\Debug\net9.0\bk23_webhook.json
 D:\CNPM\hotel-manager-service\bin\Debug\net9.0\bk23_webhook_v2.json
 D:\CNPM\hotel-manager-service\bin\Debug\net9.0\tmp_sepay.json
 D:\CNPM\hotel-manager-service\bin\Debug\net9.0\bk25_webhook.json
+D:\CNPM\hotel-manager-service\bin\Debug\net9.0\publish\web.config
+D:\CNPM\hotel-manager-service\bin\Debug\net9.0\publish\appsettings.Development.json
+D:\CNPM\hotel-manager-service\bin\Debug\net9.0\publish\appsettings.json
+D:\CNPM\hotel-manager-service\bin\Debug\net9.0\publish\bk23_webhook.json
+D:\CNPM\hotel-manager-service\bin\Debug\net9.0\publish\bk23_webhook_v2.json
+D:\CNPM\hotel-manager-service\bin\Debug\net9.0\publish\bk25_webhook.json
+D:\CNPM\hotel-manager-service\bin\Debug\net9.0\publish\HotelManagement.API.deps.json
+D:\CNPM\hotel-manager-service\bin\Debug\net9.0\publish\HotelManagement.API.runtimeconfig.json
+D:\CNPM\hotel-manager-service\bin\Debug\net9.0\publish\HotelManagement.API.staticwebassets.endpoints.json
+D:\CNPM\hotel-manager-service\bin\Debug\net9.0\publish\tmp_sepay.json

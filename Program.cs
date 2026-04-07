@@ -22,7 +22,8 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins(
                 "http://localhost:8081",
-                "http://192.168.100.238:8081"
+                "http://192.168.100.238:8081",
+                "https://staymaster-v1.vercel.app"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
